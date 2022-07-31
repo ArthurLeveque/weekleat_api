@@ -1,0 +1,11 @@
+{
+  "name": "weekleat_api",
+  "version": "1.0.0",
+  "description": "APi for the Weekleat app",
+  "main": "index.js",
+  "scripts": {
+    "test": "Hello world !"
+  },
+  "author": "Arthur LEVEQUE",
+  "license": "ISC"
+}
