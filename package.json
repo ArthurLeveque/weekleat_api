@@ -4,6 +4,7 @@
   "description": "APi for the Weekleat app",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "Hello world !"
   },
   "author": "Arthur LEVEQUE",
