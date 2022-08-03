@@ -8,5 +8,9 @@
     "test": "Hello world !"
   },
   "author": "Arthur LEVEQUE",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.9.1",
+    "websocket": "^1.0.34"
+  }
 }
