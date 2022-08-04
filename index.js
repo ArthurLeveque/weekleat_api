@@ -8,8 +8,10 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const recipesRoute = require('./routes/recipesController');
 
+const recipesRoute = require('./routes/recipes');
+
+app.use(express.json());
 app.use('/recipes', recipesRoute);
 
 app.listen(5500, console.log('API ready !'));
