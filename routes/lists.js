@@ -4,6 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 // TODO : Check user auth
+// Returns a list
 router.get('/:id', async (req, res) => {
   await db.collection('lists').doc(req.params.id).get()
   .then(list => {
@@ -20,6 +21,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // TODO : Check user auth
+// Adds a list
 router.post('/', async (req, res) => {
   await db.collection('lists').add(req.body)
   .then(function() {
@@ -32,6 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 // TODO : Check user auth
+// Edits a list
 router.put('/:id', async (req, res) => {
   await db.collection('lists').doc(req.params.id).update(req.body)
   .then(function() {
