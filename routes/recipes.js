@@ -67,4 +67,19 @@ router.put('/:id', async (req, res) => {
   })
 });
 
+// TODO : Check user auth
+router.delete('/:id', async (req, res) => {
+  await db.collection('recipes').doc(req.params.id).delete()
+  .then(function() {
+    res.status(200).send('Recipe deleted successfully !')
+  })
+  .catch(err => {
+    console.log('Error : ', err);
+    if(err.code == 5) {
+      res.status(404).send('There is no recipe corresponding this ID')
+    }
+    process.exit();
+  })
+});
+
 module.exports = router;
