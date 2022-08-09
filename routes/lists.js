@@ -9,14 +9,13 @@ router.get('/:id', async (req, res) => {
   await db.collection('lists').doc(req.params.id).get()
   .then(list => {
     if(!list.exists) {
-      res.status(404).send('There is no list corresponding this ID')
+      res.status(400).send('There is no list corresponding this ID')
     } else {
       res.status(200).send(list.data());
     }
   })
   .catch(err => {
     console.log('Error : ', err);
-    process.exit();
   })
 });
 
@@ -29,7 +28,6 @@ router.post('/', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
-    process.exit();
   })
 });
 
@@ -43,9 +41,8 @@ router.put('/:id', async (req, res) => {
   .catch(err => {
     console.log('Error : ', err);
     if(err.code == 5) {
-      res.status(404).send('There is no list corresponding this ID')
+      res.status(400).send('There is no list corresponding this ID')
     }
-    process.exit();
   })
 });
 
@@ -58,9 +55,8 @@ router.delete('/:id', async (req, res) => {
   .catch(err => {
     console.log('Error : ', err);
     if(err.code == 5) {
-      res.status(404).send('There is no list corresponding this ID')
+      res.status(400).send('There is no list corresponding this ID')
     }
-    process.exit();
   })
 });
 

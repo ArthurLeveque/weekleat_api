@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const {getAuth} = require("firebase-admin/auth");
 
 // Returns all recipes
 router.get('/', async (req, res) => {
@@ -19,7 +20,6 @@ router.get('/', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
-    process.exit();
   })
 });
 
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
   await db.collection('recipes').doc(req.params.id).get()
   .then(recipe => {
     if(!recipe.exists) {
-      res.status(404).send('There is no recipe corresponding this ID')
+      res.status(400).send('There is no recipe corresponding this ID')
     } else {
       const data = {}
       data.id = recipe.id;
@@ -38,7 +38,6 @@ router.get('/:id', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
-    process.exit();
   })
 });
 
@@ -58,21 +57,35 @@ router.get('/user/:id', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
-    process.exit();
   })
 });
 
-// TODO : Check user auth
 // Adds a recipe
 router.post('/', async (req, res) => {
-  await db.collection('recipes').add(req.body)
-  .then(function() {
-    res.status(200).send('Recipe added successfully !')
-  })
-  .catch(err => {
-    console.log('Error : ', err);
-    process.exit();
-  })
+  const current_token = req.header('auth-token');
+  if(!current_token) {
+    res.status(403).send('You need a token to access this route');
+  } else {
+    getAuth()
+    .verifyIdToken(current_token)
+    .then(async (decodedToken) => {
+      const UID = decodedToken.uid;
+      req.body.uid = UID;
+      await db.collection('recipes').add(req.body)
+      .then( response => {
+        res.status(200).send(response.id);
+      })
+      .catch(err => {
+        console.log('Error : ', err);
+        process.exit();
+      })
+    })
+    .catch((error) => {
+      res.status(400).send('Your token is invalid.')
+      console.log(error)
+    });
+    
+  }
 });
 
 // TODO : Check user auth
@@ -85,9 +98,8 @@ router.put('/:id', async (req, res) => {
   .catch(err => {
     console.log('Error : ', err);
     if(err.code == 5) {
-      res.status(404).send('There is no recipe corresponding this ID')
+      res.status(400).send('There is no recipe corresponding this ID')
     }
-    process.exit();
   })
 });
 
@@ -101,9 +113,8 @@ router.delete('/:id', async (req, res) => {
   .catch(err => {
     console.log('Error : ', err);
     if(err.code == 5) {
-      res.status(404).send('There is no recipe corresponding this ID')
+      res.status(400).send('There is no recipe corresponding this ID')
     }
-    process.exit();
   })
 });
 
