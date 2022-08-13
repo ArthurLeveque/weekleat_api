@@ -43,7 +43,7 @@ router.get('/:id', async (req, res) => {
 
 // Returns all recipes from user
 router.get('/user/:id', async (req, res) => {
-  await db.collection('recipes').where('author_id', '==', req.params.id).get()
+  await db.collection('recipes').where('uid', '==', req.params.id).get()
   .then(recipes => {
     let allData = [];
   
@@ -103,19 +103,31 @@ router.put('/:id', async (req, res) => {
   })
 });
 
-// TODO : Check user auth
 // Deletes a recipe
 router.delete('/:id', async (req, res) => {
-  await db.collection('recipes').doc(req.params.id).delete()
-  .then(function() {
-    res.status(200).send('Recipe deleted successfully !')
-  })
-  .catch(err => {
-    console.log('Error : ', err);
-    if(err.code == 5) {
-      res.status(400).send('There is no recipe corresponding this ID')
-    }
-  })
+  const current_token = req.header('auth-token');
+  if(!current_token) {
+    res.status(403).send('You need a token to access this route');
+  } else {
+    getAuth()
+    .verifyIdToken(current_token)
+    .then(async () => {
+      await db.collection('recipes').doc(req.params.id).delete()
+      .then(function() {
+        res.status(200).send('Recipe deleted successfully !')
+      })
+      .catch(err => {
+        console.log('Error : ', err);
+        if(err.code == 5) {
+          res.status(400).send('There is no recipe corresponding this ID')
+        }
+      })
+    })
+    .catch((error) => {
+      res.status(400).send('Your token is invalid.')
+      console.log(error)
+    });
+  }
 });
 
 module.exports = router;

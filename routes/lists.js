@@ -19,7 +19,7 @@ router.get('/:id', async (req, res) => {
   })
 });
 
-// TODO : Check user auth
+// TODO : Check user auth + PENSER A METTRE ID UTILISATEUR EN ID
 // Adds a list
 router.post('/', async (req, res) => {
   await db.collection('lists').add(req.body)
