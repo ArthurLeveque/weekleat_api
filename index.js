@@ -10,10 +10,12 @@ admin.initializeApp({
 
 const recipesRoute = require('./routes/recipes');
 const listsRoute = require('./routes/lists');
+const adminsRoute = require('./routes/admins');
 
 app.use(express.json());
 app.use('/recipes', recipesRoute);
 app.use('/lists', listsRoute);
+app.use('/admins', adminsRoute);
 
 app.listen(5500, console.log('API ready !'));
 

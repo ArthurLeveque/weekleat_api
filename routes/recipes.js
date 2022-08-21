@@ -4,6 +4,18 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const {getAuth} = require("firebase-admin/auth");
 
+// Checks if user can manage recipe
+const canManage = (decodedToken, CreatorId) => {
+  // If user is creator
+  // Or admin
+  // Or creator and admin
+  if(CreatorId === decodedToken.uid || decodedToken.admin === true || (CreatorId === decodedToken.uid && decodedToken.admin === true)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Returns all recipes
 router.get('/', async (req, res) => {
   await db.collection('recipes').get()
@@ -70,7 +82,7 @@ router.post('/', async (req, res) => {
     .verifyIdToken(current_token)
     .then(async (decodedToken) => {
       const UID = decodedToken.uid;
-      req.body.uid = UID;
+      req.body.authorID = UID;
       await db.collection('recipes').add(req.body)
       .then( response => {
         res.status(200).send(response.id);
@@ -105,22 +117,41 @@ router.put('/:id', async (req, res) => {
 
 // Deletes a recipe
 router.delete('/:id', async (req, res) => {
+  // check if there is a token
   const current_token = req.header('auth-token');
   if(!current_token) {
     res.status(403).send('You need a token to access this route');
   } else {
+    // Check the token
     getAuth()
     .verifyIdToken(current_token)
-    .then(async () => {
-      await db.collection('recipes').doc(req.params.id).delete()
-      .then(function() {
-        res.status(200).send('Recipe deleted successfully !')
+    .then(async (decodedToken) => {
+      // Get the concerned recipe
+      await db.collection('recipes').doc(req.params.id).get()
+      .then(async (recipe) => {
+        if(!recipe.exists) {
+          res.status(400).send('There is no recipe corresponding this ID')
+        } else {
+          // Check if user can manage this recipe
+          if (canManage(decodedToken, recipe.data().authorID)) {
+            // Delete the recipe
+            await db.collection('recipes').doc(req.params.id).delete()
+            .then(function() {
+              res.status(200).send('Recipe deleted successfully !')
+            })
+            .catch(err => {
+              console.log('Error : ', err);
+              if(err.code == 5) {
+                res.status(400).send('There is no recipe corresponding this ID')
+              }
+            })
+          } else {
+            res.status(403).send('You don\'t have the permission to delete this recipe')
+          }
+        }
       })
       .catch(err => {
         console.log('Error : ', err);
-        if(err.code == 5) {
-          res.status(400).send('There is no recipe corresponding this ID')
-        }
       })
     })
     .catch((error) => {
