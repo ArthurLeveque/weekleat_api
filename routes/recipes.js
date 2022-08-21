@@ -55,7 +55,7 @@ router.get('/:id', async (req, res) => {
 
 // Returns all recipes from user
 router.get('/user/:id', async (req, res) => {
-  await db.collection('recipes').where('uid', '==', req.params.id).get()
+  await db.collection('recipes').where('authorID', '==', req.params.id).get()
   .then(recipes => {
     let allData = [];
   
@@ -100,19 +100,44 @@ router.post('/', async (req, res) => {
   }
 });
 
-// TODO : Check user auth
 // Edits a recipe
 router.put('/:id', async (req, res) => {
-  await db.collection('recipes').doc(req.params.id).update(req.body)
-  .then(function() {
-    res.status(200).send('Recipe updated successfully !')
-  })
-  .catch(err => {
-    console.log('Error : ', err);
-    if(err.code == 5) {
-      res.status(400).send('There is no recipe corresponding this ID')
-    }
-  })
+  const current_token = req.header('auth-token');
+  if(!current_token) {
+    res.status(403).send('You need a token to access this route');
+  } else {
+    getAuth()
+    .verifyIdToken(current_token)
+    .then(async (decodedToken) => {
+      // Get the concerned recipe to check the author ID
+      await db.collection('recipes').doc(req.params.id).get()
+      .then(async (recipe) => {
+        if(!recipe.exists) {
+          res.status(400).send('There is no recipe corresponding this ID')
+        } else {
+          // Check if user can manage this recipe
+          if (canManage(decodedToken, recipe.data().authorID)) {
+            // Edit the recipe
+            await db.collection('recipes').doc(req.params.id).update(req.body)
+            .then(function() {
+              res.status(200).send('Recipe updated successfully !')
+            })
+            .catch(err => {
+              console.log('Error : ', err);
+              if(err.code == 5) {
+                res.status(400).send('There is no recipe corresponding this ID')
+              }
+            })
+          } else {
+            res.status(403).send('You don\'t have the permission to edit this recipe')
+          }
+        }
+      })
+      .catch(err => {
+        console.log('Error : ', err);
+      })
+    })
+  }
 });
 
 // Deletes a recipe
@@ -126,7 +151,7 @@ router.delete('/:id', async (req, res) => {
     getAuth()
     .verifyIdToken(current_token)
     .then(async (decodedToken) => {
-      // Get the concerned recipe
+      // Get the concerned recipe to check the author ID
       await db.collection('recipes').doc(req.params.id).get()
       .then(async (recipe) => {
         if(!recipe.exists) {
