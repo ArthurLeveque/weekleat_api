@@ -95,8 +95,7 @@ router.post('/', async (req, res) => {
     .catch((error) => {
       res.status(400).send('Your token is invalid.')
       console.log(error)
-    });
-    
+    }); 
   }
 });
 
