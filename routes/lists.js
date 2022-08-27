@@ -23,7 +23,11 @@ router.get('/user/:id', async (req, res) => {
     if(list.empty) {
       res.status(400).send('There is no list corresponding this ID')
     } else {
-      res.status(200).send(list.docs[0].data());
+      data = {
+        id: list.docs[0].id,
+        data: list.docs[0].data()
+      }
+      res.status(200).send(data);
     }
   })
   .catch(err => {
@@ -43,8 +47,8 @@ router.post('/', async (req, res) => {
       const UID = decodedToken.uid;
       req.body.authorID = UID;
       await db.collection('lists').add(req.body)
-      .then(function() {
-        res.status(200).send('List added successfully !')
+      .then((response) => {
+        res.status(200).send(response.id)
       })
       .catch(err => {
         console.log('Error : ', err);
@@ -58,7 +62,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// TODO : Check user auth
 // Edits a list
 router.put('/:id', async (req, res) => {
   const current_token = req.header('auth-token');
@@ -67,7 +70,7 @@ router.put('/:id', async (req, res) => {
   } else {
     getAuth()
     .verifyIdToken(current_token)
-    .then(async (decodedToken) => {
+    .then(async () => {
       await db.collection('lists').doc(req.params.id).update(req.body)
       .then(function() {
         res.status(200).send('List updated successfully !')

@@ -1,4 +1,4 @@
-const http = require('http')
+const http = require('http');
 const express = require('express');
 const app = express();
 const admin = require('firebase-admin');
@@ -11,11 +11,13 @@ admin.initializeApp({
 const recipesRoute = require('./routes/recipes');
 const listsRoute = require('./routes/lists');
 const adminsRoute = require('./routes/admins');
+const paymentsRoute = require('./routes/payments');
 
 app.use(express.json());
 app.use('/recipes', recipesRoute);
 app.use('/lists', listsRoute);
 app.use('/admins', adminsRoute);
+app.use('/payments', paymentsRoute);
 
 app.listen(5500, console.log('API ready !'));
 
