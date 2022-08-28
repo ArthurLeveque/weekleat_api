@@ -21,7 +21,7 @@ router.get('/user/:id', async (req, res) => {
   await db.collection('lists').where('authorID', '==', req.params.id).get()
   .then(list => {
     if(list.empty) {
-      res.status(400).send('There is no list corresponding this ID')
+      res.status(402).send('There is no list corresponding this ID')
     } else {
       data = {
         id: list.docs[0].id,
