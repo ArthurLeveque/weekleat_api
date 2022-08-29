@@ -4,6 +4,17 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const {getAuth} = require("firebase-admin/auth");
 
+const shuffle = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+
+      array[i] = array[j];
+      array[j] = temp;
+  }
+  return array;
+};
+
 // Checks if user can manage recipe
 const canManage = (decodedToken, CreatorId) => {
   // If user is creator
@@ -33,6 +44,40 @@ router.get('/', async (req, res) => {
   .catch(err => {
     console.log('Error : ', err);
   })
+});
+
+// Returns a random recipe
+router.get('/random', async (req, res) => {
+  const current_token = req.header('auth-token');
+  if(!current_token) {
+    res.status(403).send('You need a token to access this route');
+  } else {
+    getAuth()
+    .verifyIdToken(current_token)
+    .then(async () => {
+      let allData = [];
+      await db.collection('recipes').get()
+      .then(recipes => {
+        recipes.forEach((recipe) => {
+          const data = {}
+          data.id = recipe.id;
+          data.data = recipe.data();
+          allData.push(data);
+        });
+      })
+      .catch(err => {
+        console.log('Error : ', err);
+      });
+
+      shuffle(allData) // Shuffle the array
+
+      res.status(200).send(allData[0]);
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(400).send('Your token is invalid.')
+    }); 
+  }
 });
 
 // Returns a specific recipe

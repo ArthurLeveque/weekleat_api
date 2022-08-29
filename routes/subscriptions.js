@@ -97,7 +97,6 @@ router.get('/isSubscribed', async (req, res) => {
           // only get active and canceled subscriptions
           const filteredSubscriptions = subscriptions.data.filter(sub => sub.status === 'active' || sub.status === 'canceled');
 
-          console.log(filteredSubscriptions)
           // If there is no active subscriptions send false, else send infos
           if(filteredSubscriptions.length === 0) {
             res.status(200).send(false);

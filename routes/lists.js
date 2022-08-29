@@ -72,8 +72,8 @@ router.put('/:id', async (req, res) => {
     .verifyIdToken(current_token)
     .then(async () => {
       await db.collection('lists').doc(req.params.id).update(req.body)
-      .then(function() {
-        res.status(200).send('List updated successfully !')
+      .then((response) => {
+        res.status(200).send(response.id)
       })
       .catch(err => {
         console.log('Error : ', err);
