@@ -89,21 +89,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// TODO : Check user auth
-// Deletes a list
-router.delete('/:id', async (req, res) => {
-  await db.collection('lists').doc(req.params.id).delete()
-  .then(function() {
-    res.status(200).send('List deleted successfully !')
-  })
-  .catch(err => {
-    console.log('Error : ', err);
-    if(err.code == 5) {
-      res.status(400).send('There is no list corresponding this ID')
-    }
-  })
-});
-
 // Generates a list with 14 random recipes
 router.post('/generate', async (req, res) => {
   const current_token = req.header('auth-token');

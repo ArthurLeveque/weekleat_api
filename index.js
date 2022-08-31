@@ -13,6 +13,7 @@ const listsRoute = require('./routes/lists');
 const adminsRoute = require('./routes/admins');
 const subscriptionsRoute = require('./routes/subscriptions');
 const favoritesRoute = require('./routes/favorites');
+const usersRoute = require('./routes/users');
 
 app.use(express.json());
 app.use('/recipes', recipesRoute);
@@ -20,6 +21,7 @@ app.use('/lists', listsRoute);
 app.use('/admins', adminsRoute);
 app.use('/subscriptions', subscriptionsRoute);
 app.use('/favorites', favoritesRoute);
+app.use('/users', usersRoute);
 
 app.listen(5500, console.log('API ready !'));
 
