@@ -32,12 +32,12 @@ const usersRoute = require('./routes/users');
 
 
 
-app.listen(5500, console.log('API ready !'));
+// app.listen(5500, console.log('API ready !'));
 
-http.createServer(function (request, response) {
-  response.writeHead(200, {"Content-Type": "text/plain"})
-  response.end("Hello World with index.js !\n")
-  
+// http.createServer(function (request, response) {
+//   response.writeHead(200, {"Content-Type": "text/plain"})
+//   response.end("Hello World with index.js !\n")
+
   app.use(express.json());
   app.use('/recipes', recipesRoute);
   app.use('/lists', listsRoute);
@@ -45,4 +45,4 @@ http.createServer(function (request, response) {
   app.use('/subscriptions', subscriptionsRoute);
   app.use('/favorites', favoritesRoute);
   app.use('/users', usersRoute);
-}).listen(process.env.PORT)
+// }).listen(process.env.PORT)
