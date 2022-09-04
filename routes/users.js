@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const {getAuth} = require("firebase-admin/auth");
 
-// Deletes user, his/her list and favorites
+// Deletes a user and his favorites/lists
 router.delete('/', async (req, res) => {
   const current_token = req.header('auth-token');
   if(!current_token) {

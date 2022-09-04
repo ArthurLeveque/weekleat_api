@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const {getAuth} = require("firebase-admin/auth");
 
-// Returns a user's favorites
+// Get user's favorites
 router.get('/user/:id', async (req, res) => {
   await db.collection('favorites').where('authorID', '==', req.params.id).get()
   .then(favorites => {
@@ -23,7 +23,7 @@ router.get('/user/:id', async (req, res) => {
   })
 });
 
-// Creates a favorites list
+// Adds favorites
 router.post('/', async (req, res) => {
   const current_token = req.header('auth-token');
   if(!current_token) {
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Edits a favorites list
+// Edits favorites
 router.put('/:id', async (req, res) => {
   const current_token = req.header('auth-token');
   if(!current_token) {

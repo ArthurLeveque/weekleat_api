@@ -1,4 +1,3 @@
-const { request } = require('express');
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
@@ -32,6 +31,7 @@ router.get('/user/:id', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
+    res.status(400).send('An error occured with Firebase')
   })
 });
 
@@ -56,8 +56,8 @@ router.post('/', async (req, res) => {
       })
     })
     .catch((error) => {
-      res.status(400).send('Your token is invalid.')
       console.log(error)
+      res.status(400).send('Your token is invalid.')
     });
   }
 });

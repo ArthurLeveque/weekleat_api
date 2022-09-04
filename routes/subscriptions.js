@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const {getAuth} = require("firebase-admin/auth");
-const db = admin.firestore();
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.stripePrivateKey, {apiVersion: "2022-08-01"})
 

@@ -4,7 +4,7 @@
   "description": "APi for the Weekleat app",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "Hello world !"
   },
   "author": "Arthur LEVEQUE",
@@ -13,9 +13,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
+    "express-jsdoc-swagger": "^1.8.0",
     "firebase": "^9.9.1",
     "firebase-admin": "^11.0.1",
     "stripe": "^10.6.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0",
     "websocket": "^1.0.34"
   }
 }

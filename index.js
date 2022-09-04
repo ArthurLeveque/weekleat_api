@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const admin = require('firebase-admin');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
+const expressJSDocSwagger = require('express-jsdoc-swagger');
 
 dotenv.config();
 
@@ -39,5 +41,42 @@ app.use('/admins', adminsRoute);
 app.use('/subscriptions', subscriptionsRoute);
 app.use('/favorites', favoritesRoute);
 app.use('/users', usersRoute);
+
+const options = {
+  info: {
+    version: '1.0.0',
+    title: 'Weekleat API',
+    description: 'Back-end for the Weekleat app',
+  },
+  security: {
+    "auth-token": {
+      type: 'http',
+      scheme: 'bearer',
+    },
+  },
+  servers: [
+    {
+      url: 'https://weekleat-api.herokuapp.com',
+      description: 'The production API server',
+    },
+    {
+      url: 'http://localhost:5500',
+      description: 'The developement API server',
+    }
+  ],
+  filesPattern: 'doc/*.js',
+  baseDir: __dirname,
+  // URL where SwaggerUI will be rendered
+  swaggerUIPath: '/api-docs',
+  // Expose OpenAPI UI
+  exposeSwaggerUI: true,
+  // Expose Open API JSON Docs documentation in `apiDocsPath` path.
+  exposeApiDocs: false,
+  // Set non-required fields as nullable by default
+  notRequiredAsNullable: false,
+};
+expressJSDocSwagger(app)(options);
+// const swaggerDocs = swaggerJsDoc(swaggerOptions);
+// app.use('/api-docs', swaggerUi.serve,swaggerUi.setup(swaggerDocs));
 
 app.listen(port, console.log('API ready !'));

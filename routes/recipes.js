@@ -27,7 +27,7 @@ const canManage = (decodedToken, CreatorId) => {
   }
 }
 
-// Returns all recipes
+// Get all recipes
 router.get('/', async (req, res) => {
   await db.collection('recipes').get()
   .then(recipes => {
@@ -43,10 +43,11 @@ router.get('/', async (req, res) => {
   })
   .catch(err => {
     console.log('Error : ', err);
+    es.status(200).send("An error occured")
   })
 });
 
-// Returns a random recipe
+// Get a random recipe
 router.get('/random', async (req, res) => {
   const current_token = req.header('auth-token');
   if(!current_token) {
@@ -80,7 +81,7 @@ router.get('/random', async (req, res) => {
   }
 });
 
-// Returns a specific recipe
+// Retrieve a recipe with an ID
 router.get('/:id', async (req, res) => {
   await db.collection('recipes').doc(req.params.id).get()
   .then(recipe => {
@@ -98,7 +99,7 @@ router.get('/:id', async (req, res) => {
   })
 });
 
-// Returns all recipes from user
+// Get all user's recipes
 router.get('/user/:id', async (req, res) => {
   await db.collection('recipes').where('authorID', '==', req.params.id).get()
   .then(recipes => {
@@ -184,7 +185,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Deletes a recipe
+// deletes a recipe
 router.delete('/:id', async (req, res) => {
   // check if there is a token
   const current_token = req.header('auth-token');
