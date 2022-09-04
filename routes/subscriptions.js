@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const {getAuth} = require("firebase-admin/auth");
 const db = admin.firestore();
 const Stripe = require('stripe');
-const stripe = Stripe("sk_test_51Lb3zcJH5h0agO1XKcn1DP6zBnflnEFJkvYcdKh7YaVQnEtBFM2pxY1s0w8P6ftLHpLfeVafCmEZCzmgzOtlRf3K00HX0dmQuu", {apiVersion: "2022-08-01"})
+const stripe = Stripe(process.env.stripePrivateKey, {apiVersion: "2022-08-01"})
 
 // Adds a subscription
 router.post('/', async (req, res) => {
