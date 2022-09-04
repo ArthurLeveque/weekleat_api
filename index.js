@@ -30,6 +30,8 @@ const subscriptionsRoute = require('./routes/subscriptions');
 const favoritesRoute = require('./routes/favorites');
 const usersRoute = require('./routes/users');
 
+const port = process.env.PORT || 5500;
+
 app.use(express.json());
 app.use('/recipes', recipesRoute);
 app.use('/lists', listsRoute);
@@ -38,9 +40,4 @@ app.use('/subscriptions', subscriptionsRoute);
 app.use('/favorites', favoritesRoute);
 app.use('/users', usersRoute);
 
-app.listen(5500, console.log('API ready !'));
-
-http.createServer(function (request, response) {
-  response.writeHead(200, {"Content-Type": "text/plain"})
-  response.end("Hello World with index.js !\n")
-}).listen(process.env.PORT)
+app.listen(port, console.log('API ready !'));
