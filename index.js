@@ -1,9 +1,7 @@
-const http = require('http');
 const express = require('express');
 const app = express();
 const admin = require('firebase-admin');
 const dotenv = require('dotenv');
-const swaggerUi = require('swagger-ui-express');
 const expressJSDocSwagger = require('express-jsdoc-swagger');
 
 dotenv.config();
